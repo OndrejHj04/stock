@@ -16,55 +16,63 @@ export default function Admin() {
     });
   }, []);
 
-  const handleAdd = ({ name, count }) => {
+  const handleIncrement = (name, count) => {
     updateDoc(doc(db, "items", name), {
       count: count + slider,
     });
   };
 
-  const handleMinus = ({ name, count }) => {
+  const handleDecrement = (name, count) => {
     updateDoc(doc(db, "items", name), {
       count: count - slider,
     });
   };
 
   return (
-    <Paper
-      className="p-3 rounded-xl max-w-3xl"
-      style={{ border: "1px solid lightgray" }}
-    >
-      <Typography variant="h4" className="text-center">
-        Inventář
+    <Paper className="p-3 max-w-md mx-auto flex flex-col gap-2 items-center">
+      <Typography variant="h4">
+        Předměty na burze
       </Typography>
-      <div className="flex flex-col gap-2">
-        {data.map((item, i) => (
-          <React.Fragment key={i}>
-            <div className="flex items-center gap-2">
-              <Typography variant="h6">{item.name}</Typography>
-              <Typography variant="h6">Počet: {item.count}</Typography>
-              <Button variant="contained" onClick={() => handleAdd(item)}>
+      {data.map(({ name, count }, i) => (
+        <React.Fragment key={i}>
+          <div className="flex gap-3 items-center">
+            <div className="mr-auto">
+              <Typography variant="h6">Zbraň</Typography>
+            </div>
+            <div>
+              <Typography>POČET: {count}</Typography>
+            </div>
+            <div>
+              <Button
+                onClick={() => handleIncrement(name, count)}
+                variant="contained"
+              >
                 <Typography>Přidat</Typography>
               </Button>
-              <Button variant="contained" onClick={() => handleMinus(item)}>
+            </div>
+            <div>
+              <Button
+                onClick={() => handleDecrement(name, count)}
+                variant="contained"
+              >
                 <Typography>Odebrat</Typography>
               </Button>
             </div>
-            <div className="bg-gray-200 h-0.5 w-full" />
-          </React.Fragment>
-        ))}
-        <Typography className="text-center" variant="h6">
-          Aktuální počet k přidání {slider}
-        </Typography>
-        <Slider
-          value={slider}
-          onChange={(_, number) => setSlider(number)}
-          aria-label="Default"
-          valueLabelDisplay="auto"
-          step={1}
-          min={1}
-          max={10}
-        />
-      </div>
+          </div>
+        </React.Fragment>
+      ))}
+      <Typography variant="h6">
+        Hodnota slideru: {slider}
+      </Typography>
+      <Slider
+        value={slider}
+        valueLabelDisplay="auto"
+        onChange={(_, number) => setSlider(number)}
+        step={1}
+        marks
+        min={1}
+        max={10}
+      />
     </Paper>
   );
 }
