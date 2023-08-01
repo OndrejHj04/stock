@@ -1,10 +1,9 @@
 "use client";
 import { Button, Paper, Slider, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../../db";
 import { useState } from "react";
-import { Slide } from "@mui/material";
 
 export default function Admin() {
   const [data, setData] = useState([]);
@@ -17,13 +16,18 @@ export default function Admin() {
     });
   }, []);
 
-  const handleAdd = () => {
+  const handleAdd = ({ name, count }) => {
+    updateDoc(doc(db, "items", name), {
+      count: count + slider,
+    });
+  };
 
-  }
+  const handleMinus = ({ name, count }) => {
+    updateDoc(doc(db, "items", name), {
+      count: count - slider,
+    });
+  };
 
-  const handleMinus = () => {
-    
-  }
   return (
     <Paper
       className="p-3 rounded-xl max-w-3xl"
@@ -36,12 +40,12 @@ export default function Admin() {
         {data.map((item, i) => (
           <React.Fragment key={i}>
             <div className="flex items-center gap-2">
-              <Typography variant="h6" onClick={()=>handleAdd(item)}>{item.name}</Typography>
-              <Typography variant="h6" onClick={()=>handleMinus(item)}>Počet: {item.count}</Typography>
-              <Button variant="contained">
+              <Typography variant="h6">{item.name}</Typography>
+              <Typography variant="h6">Počet: {item.count}</Typography>
+              <Button variant="contained" onClick={() => handleAdd(item)}>
                 <Typography>Přidat</Typography>
               </Button>
-              <Button variant="contained">
+              <Button variant="contained" onClick={() => handleMinus(item)}>
                 <Typography>Odebrat</Typography>
               </Button>
             </div>
