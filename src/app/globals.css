@@ -19,3 +19,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.swal2-popup {
+  font-family: Helvetica !important;
+}
