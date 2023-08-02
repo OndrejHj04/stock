@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../db";
+import { redirect } from "next/dist/server/api-utils";
 
 export default function Inventory() {
   const [data, setData] = useState(null);
@@ -21,19 +22,6 @@ export default function Inventory() {
       setData(data);
     });
   }, []);
-
-  const handleIncrement = (name, price, history) => {
-    console.log(price, slider);
-    updateDoc(doc(db, "items", name), {
-      price: price + slider,
-    });
-  };
-
-  const handleDecrement = (name, price) => {
-    updateDoc(doc(db, "items", name), {
-      price: price - slider,
-    });
-  };
 
   return (
     <>
@@ -53,18 +41,10 @@ export default function Inventory() {
                     </div>
                     <div>
                       <Button
-                        onClick={() => handleIncrement(name, price, history)}
+                        onClick={() => redirect(`/admin/inventory/${name}`)}
                         variant="contained"
                       >
-                        <Typography>Přidat</Typography>
-                      </Button>
-                    </div>
-                    <div>
-                      <Button
-                        onClick={() => handleDecrement(name, price, history)}
-                        variant="contained"
-                      >
-                        <Typography>Odebrat</Typography>
+                        <Typography>Detail</Typography>
                       </Button>
                     </div>
                   </div>
