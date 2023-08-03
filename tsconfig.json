@@ -23,6 +23,20 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/admin/page.jsx", "src/app/admin/layout.jsx", "src/app/dashboard/page.jsx", "src/app/login/page.jsx", "src/app/layout.jsx", "db.js", "components/Providers.jsx", "components/LoginButton.jsx", "components/Item.jsx", "src/app/admin/slides/AddPlayer.jsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/admin/page.jsx",
+    "src/app/admin/layout.jsx",
+    "src/app/dashboard/page.jsx",
+    "src/app/login/page.jsx",
+    "src/app/layout.jsx",
+    "db.js",
+    "components/Providers.jsx",
+    "components/Item.jsx",
+    "src/app/admin/slides/Players.jsx"
+  ],
   "exclude": ["node_modules"]
 }

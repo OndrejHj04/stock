@@ -1,7 +1,5 @@
-import { Button, TextField, Typography } from "@mui/material";
-import { poppins } from "../layout";
-import { LoginButton } from "../../../components/LoginButton";
-
+import { Typography } from "@mui/material";
+import React from "react";
 export default function Home() {
   return (
     <>

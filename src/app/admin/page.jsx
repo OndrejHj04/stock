@@ -1,27 +1,21 @@
-"use client";
+import { Button, Paper, Typography } from "@mui/material";
 import React from "react";
-import { Pagination, Paper } from "@mui/material";
-import Inventory from "./slides/Inventory";
-import { useState } from "react";
-import AddPlayer from "./slides/AddPlayer";
+import getAllPlayers from "../../../lib/getAllPlayers";
+import NewPlayerInput from "../../../components/NewPlayerInput";
+export default async function Page() {
+  const userData = getAllPlayers();
+  const data = await userData;
 
-export default function Admin() {
-  const [pagination, setPagination] = useState(1);
   return (
-    <>
-      <div className="flex justify-center items-center flex-1">
-        <Paper className="p-3 max-w-md mx-auto flex flex-col gap-2 items-center">
-          {pagination === 1 && <Inventory />}
-          {pagination === 2 && <AddPlayer />}
-        </Paper>
-      </div>
-
-      <Pagination
-        page={pagination}
-        count={4}
-        className="mx-auto my-3"
-        onChange={(_, number) => setPagination(number)}
-      />
-    </>
+    <Paper className="flex flex-col gap-2 p-2">
+      <Typography variant="h4">Player List</Typography>
+      <NewPlayerInput />
+      {data.map((item, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <Typography>{item.name}</Typography>
+          <Button variant="contained" className="ml-auto">Detail</Button>
+        </div>
+      ))}
+    </Paper>
   );
 }
