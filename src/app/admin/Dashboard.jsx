@@ -1,11 +1,14 @@
 import { Paper, Typography } from "@mui/material";
 import React from "react";
-export default function Page() {
+import MarketBuy from "../../../components/MarketBuy";
+
+export default function Dashboard() {
   return (
     <Paper className="flex flex-col gap-2 p-2">
       <Typography variant="h4" className="text-center">
-        dash
+        Dashboard
       </Typography>
+      <MarketBuy />
     </Paper>
   );
 }

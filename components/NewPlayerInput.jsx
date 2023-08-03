@@ -22,7 +22,7 @@ export default function NewPlayerInput() {
       onSubmit={handleSubmit}
     >
       <TextField variant="outlined" label="Jméno" name="name" />
-      <Button type="submit" variant="contained" className="mx-auto">
+      <Button type="submit" variant="contained">
         Přidat
       </Button>
     </form>

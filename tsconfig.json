@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/admin/dashboard/page.jsx",
+    "src/app/admin/Dashboard.jsx",
     "src/app/admin/layout.jsx",
     "src/app/dashboard/page.jsx",
     "src/app/login/page.jsx",

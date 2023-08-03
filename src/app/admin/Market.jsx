@@ -2,14 +2,15 @@
 import { Button, CircularProgress, Paper, Typography } from "@mui/material";
 import { collection, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { db } from "../../../../db";
-import NewPlayerInput from "../../../../components/NewPlayerInput";
+import { db } from "../../../db";
 import { useRouter } from "next/navigation";
-export default function Page() {
+
+
+export default function Market() {
   const [data, setData] = useState(null);
   const navigation = useRouter();
   useEffect(() => {
-    onSnapshot(collection(db, "players"), (snapshot) => {
+    onSnapshot(collection(db, "items"), (snapshot) => {
       const users = [];
       snapshot.forEach((doc) => users.push(doc.data()));
       return setData(users);
@@ -19,9 +20,8 @@ export default function Page() {
   return (
     <Paper className="flex flex-col gap-2 p-2">
       <Typography variant="h4" className="text-center">
-        Player List
+        Předměty na burze
       </Typography>
-      <NewPlayerInput />
       <div className="flex">
         {Array.isArray(data) ? (
           <>
@@ -35,11 +35,13 @@ export default function Page() {
                     <Typography className="mr-auto" variant="h6">
                       {name}
                     </Typography>
+                    <Typography>MIN: {i},-</Typography>
+                    <Typography>MAX: {i},-</Typography>
                     <Typography>MAJETEK: {i},-</Typography>
                     <Button
                       variant="outlined"
                       onClick={() =>
-                        navigation.push(`/administration/player/${name}`)
+                        navigation.push(`/administration/market/${name}`)
                       }
                     >
                       Detail
@@ -48,7 +50,9 @@ export default function Page() {
                 ))}
               </div>
             ) : (
-              <Typography className="m-auto">Žádní uživatelé k zobrazení</Typography>
+              <Typography className="m-auto">
+                Žádní uživatelé k zobrazení
+              </Typography>
             )}
           </>
         ) : (
