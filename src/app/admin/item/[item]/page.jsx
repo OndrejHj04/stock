@@ -9,21 +9,12 @@ import {
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import {
-  ResponsiveChartContainer,
-  BarPlot,
-  LinePlot,
-  ChartsXAxis,
-  ChartsYAxis,
-  axisClasses,
-  MarkPlot,
-  LineChart,
-} from "@mui/x-charts";
+import { LineChart } from "@mui/x-charts";
 import { db } from "../../../../../db";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import swal from "sweetalert2";
-import { ChartContainer } from "@mui/x-charts/ChartContainer";
+
 export default function Player({ params: { item } }) {
   const [data, setData] = useState(null);
   const [price, setPrice] = useState(null);
@@ -91,15 +82,26 @@ export default function Player({ params: { item } }) {
                   ),
                 }}
               />
-              <Button
-                variant="contained"
-                className="z-10"
-                color="primary"
-                disabled={data.price === Number(price) || !price}
-                onClick={() => handlePriceChange()}
-              >
-                <Typography>Změnit</Typography>
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="contained"
+                  className="z-10 w-1/2"
+                  color="primary"
+                  disabled={data.price === Number(price) || !price}
+                  onClick={() => handlePriceChange()}
+                >
+                  <Typography>Změnit</Typography>
+                </Button>
+                <Button
+                  variant="contained"
+                  className="z-10 w-1/2"
+                  color="primary"
+                  disabled={data.price === Number(price) || !price}
+                  onClick={() => setPrice(data.price.toString())}
+                >
+                  <Typography>Reset</Typography>
+                </Button>
+              </div>
             </div>
 
             {data.history.length ? (
@@ -112,18 +114,31 @@ export default function Player({ params: { item } }) {
                       height={300}
                       series={[
                         {
-                          data: data.history.map(({ price }) => price),
+                          data: [
+                            ...data.history.map(({ price }) => price),
+                            price,
+                          ],
                         },
                       ]}
                       xAxis={[
                         {
                           scaleType: "point",
-                          data: data.history.map(({ timestamp }) => timestamp),
+                          data: [
+                            ...data.history.map(({ timestamp }) => timestamp),
+                            moment().format("DD.MM HH:mm"),
+                          ],
                         },
                       ]}
                       sx={{
                         ".MuiChartsAxis-bottom": {
                           display: "none",
+                        },
+                        ".MuiMarkElement-series-auto-generated-id-0:not(:last-child) ":
+                          {
+                            display: "none",
+                          },
+                        ".MuiMarkElement-series-auto-generated-id-0 ": {
+                          stroke: "black",
                         },
                       }}
                     />
