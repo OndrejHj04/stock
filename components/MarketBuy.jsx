@@ -1,50 +1,144 @@
 "use client";
-import { TextField, Typography } from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
-import Image from "next/image";
+import {
+  Autocomplete,
+  Button,
+  InputAdornment,
+  Slider,
+  TextField,
+} from "@mui/material";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../db";
+import swal from "sweetalert2";
 
 export default function MarketBuy() {
-  const [name, setName] = useState("");
+  const [form, setForm] = useState({ name: "", item: "", count: 1 });
   const [validate, setValidate] = useState(null);
+  const [items, setItems] = useState([]);
+  const [price, setPrice] = useState(null);
+  useEffect(() => {
+    getDocs(collection(db, "items")).then((doc) => {
+      const items = [];
+      doc.forEach((d) => items.push(d.data()));
+      setItems(items);
+    });
+  }, []);
 
   useEffect(() => {
-    if (name.length) {
-      getDoc(doc(db, "players", name)).then((doc) => {
-        if (doc.exists()) {
-          setValidate(true);
-        } else {
-          setValidate(false);
-        }
-      });
+    if (form.item) {
+      setPrice(form.item.price * form.count);
     } else {
-      setValidate(null);
+      setPrice(null);
     }
-  }, [name]);
-  console.log(name, validate);
+  }, [form.item, form.count]);
+
+  const handleSubmit = () => {
+    const {
+      name,
+      item: { id, price },
+      count,
+    } = form;
+    const docRef = doc(db, "players", name);
+    getDoc(docRef)
+      .then((doc) => {
+        const inventory = doc.data().inventory || [];
+        updateDoc(docRef, {
+          ...doc.data(),
+          inventory: [...inventory, { id, price, count }],
+        });
+      })
+      .then(() => {
+        swal.fire(
+          `Předmět "${form.item.label}" zakoupen!`,
+          `Pro hráče "${name}" v počtu ${count} kusů za celkem ${
+            price * count
+          },- Chc`,
+          "success"
+        );
+      });
+  };
 
   return (
-    <form className="flex flex-col">
-      <div className="flex items-center gap-3">
+    <form className="flex flex-col gap-2">
+      <div className="flex items-center ">
         <TextField
           variant="outlined"
           label="Nebuďte slušnej, řekněte jméno!"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={form.name}
+          sx={{ width: 300 }}
+          error={validate === null ? false : !validate}
+          onChange={(e) => {
+            const name = e.target.value;
+            setForm({ ...form, name });
+
+            if (name.length) {
+              getDoc(doc(db, "players", name)).then((doc) => {
+                if (doc.exists()) {
+                  setValidate(true);
+                } else {
+                  setValidate(false);
+                }
+              });
+            } else {
+              setValidate(null);
+            }
+          }}
         />
-        <div>
-          <Image
-            className="ml-5"
-            height={30}
-            width={30}
-            alt="icon"
-            src={`/check.png`}
-          />
-        </div>
       </div>
-      <div></div>
-      <div></div>
+      <div>
+        <Autocomplete
+          disablePortal
+          filterSelectedOptions
+          onChange={(e, value) => setForm({ ...form, item: value })}
+          sx={{ width: 300 }}
+          id="combo-box-demo"
+          options={items.map((item, i) => ({
+            label: item.name,
+            id: i,
+            price: item.price,
+          }))}
+          renderInput={(params) => <TextField {...params} label="Předmět" />}
+        />
+      </div>
+      <div>
+        <Slider
+          aria-label="Temperature"
+          value={form.count}
+          onChange={(_, value) => setForm({ ...form, count: value })}
+          valueLabelDisplay="auto"
+          step={1}
+          marks
+          min={1}
+          max={10}
+        />
+      </div>
+      <div>
+        <TextField
+          label="Vypocet ceny"
+          sx={{ width: 300 }}
+          value={price || ""}
+          InputProps={{
+            readOnly: true,
+            endAdornment: <InputAdornment position="start">Chc</InputAdornment>,
+          }}
+        />
+      </div>
+      <div>
+        <Button
+          style={{ width: "100%" }}
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={!form.name || !form?.item?.label}
+        >
+          Zakoupit
+        </Button>
+      </div>
     </form>
   );
 }
