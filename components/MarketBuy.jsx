@@ -99,7 +99,7 @@ export default function MarketBuy() {
           sx={{ width: 300 }}
           id="combo-box-demo"
           options={items.map((item) => ({
-            label: item.name,
+            label: item.label,
             id: item.id,
             price: item.price,
           }))}
