@@ -8,10 +8,22 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  ResponsiveChartContainer,
+  BarPlot,
+  LinePlot,
+  ChartsXAxis,
+  ChartsYAxis,
+  axisClasses,
+  MarkPlot,
+  LineChart,
+} from "@mui/x-charts";
 import { db } from "../../../../../db";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 import swal from "sweetalert2";
+import { ChartContainer } from "@mui/x-charts/ChartContainer";
 export default function Player({ params: { item } }) {
   const [data, setData] = useState(null);
   const [price, setPrice] = useState(null);
@@ -42,7 +54,10 @@ export default function Player({ params: { item } }) {
         if (result.isConfirmed) {
           const newData = {
             ...data,
-            history: [...data.history, data.price],
+            history: [
+              ...data.history,
+              { price: data.price, timestamp: moment().format("DD.MM HH:mm") },
+            ],
             price: Number(price),
           };
           updateDoc(doc(db, "items", item), newData);
@@ -78,6 +93,7 @@ export default function Player({ params: { item } }) {
               />
               <Button
                 variant="contained"
+                className="z-10"
                 color="primary"
                 disabled={data.price === Number(price) || !price}
                 onClick={() => handlePriceChange()}
@@ -85,14 +101,40 @@ export default function Player({ params: { item } }) {
                 <Typography>Změnit</Typography>
               </Button>
             </div>
-            <Typography variant="h5">Historie:</Typography>
-            <div className="flex flex-col">
-              {data.history.map((number, i) => (
-                <div key={i}>
-                  <Typography>{number},- Chc</Typography>
+
+            {data.history.length ? (
+              <div>
+                <Typography variant="h5">Graf:</Typography>
+                <div className="relative" style={{ width: 500, height: 220 }}>
+                  <div className="absolute -top-20">
+                    <LineChart
+                      width={500}
+                      height={300}
+                      series={[
+                        {
+                          data: data.history.map(({ price }) => price),
+                        },
+                      ]}
+                      xAxis={[
+                        {
+                          scaleType: "point",
+                          data: data.history.map(({ timestamp }) => timestamp),
+                        },
+                      ]}
+                      sx={{
+                        ".MuiChartsAxis-bottom": {
+                          display: "none",
+                        },
+                      }}
+                    />
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <>
+                <Typography variant="h5">Žádná historie změn ceny</Typography>
+              </>
+            )}
           </>
         )}
       </Paper>
