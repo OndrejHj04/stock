@@ -1,6 +1,7 @@
 import { Paper } from "@mui/material";
 import React from "react";
 import MarketBuy from "../../../components/MarketBuy";
+import Notifi from "../../../components/Notifi";
 import MarketSell from "../../../components/MarketSell";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -12,6 +13,7 @@ export default function Dashboard() {
   const data = [
     { title: "Nákup", component: <MarketBuy /> },
     { title: "Prodej", component: <MarketSell /> },
+    { title: "Notifikace", component: <Notifi /> },
   ];
   return (
     <Paper className="flex flex-col gap-2 p-2" sx={{ maxWidth: "600px" }}>
