@@ -30,10 +30,10 @@ export default function Market() {
                 className="flex flex-col overflow-scroll gap-1.5"
                 style={{ maxHeight: "400px" }}
               >
-                {data.map(({ name }, i) => (
+                {data.map(({ label }, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <Typography className="mr-auto" variant="h6">
-                      {name}
+                      {label}
                     </Typography>
                     <Typography>MIN: {i},-</Typography>
                     <Typography>MAX: {i},-</Typography>
@@ -41,7 +41,7 @@ export default function Market() {
                     <Button
                       variant="outlined"
                       onClick={() =>
-                        navigation.push(`/administration/market/${name}`)
+                        navigation.push(`/admin/item/${label}`)
                       }
                     >
                       Detail
