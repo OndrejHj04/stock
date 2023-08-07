@@ -17,7 +17,7 @@ import React, { useEffect, useState } from "react";
 import { db } from "../db";
 import swal from "sweetalert2";
 
-export default function MarketBuy() {
+export default function MarketSell() {
   const [form, setForm] = useState({ name: "", item: "", count: 1 });
   const [validate, setValidate] = useState(null);
   const [items, setItems] = useState([]);
@@ -63,7 +63,7 @@ export default function MarketBuy() {
         );
       });
   };
-  console.log(validate)
+  console.log(validate);
   return (
     <form className="flex flex-col gap-2">
       <div className="flex items-center ">
