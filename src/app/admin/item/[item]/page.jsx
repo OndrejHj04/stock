@@ -19,7 +19,7 @@ export default function Player({ params: { item } }) {
   const [data, setData] = useState(null);
   const [price, setPrice] = useState(null);
   const router = useRouter();
-
+  const validation = data?.price === Number(price) || !price;
   useEffect(() => {
     getDoc(doc(db, "items", item)).then((doc) => {
       if (doc.exists()) {
@@ -47,7 +47,7 @@ export default function Player({ params: { item } }) {
             ...data,
             history: [
               ...data.history,
-              { price: data.price, timestamp: moment().format("DD.MM HH:mm") },
+              { price: Number(price), timestamp: moment().format("DD.MM. HH:mm:ss") },
             ],
             price: Number(price),
           };
@@ -87,7 +87,7 @@ export default function Player({ params: { item } }) {
                   variant="contained"
                   className="z-10 w-1/2"
                   color="primary"
-                  disabled={data.price === Number(price) || !price}
+                  disabled={validation}
                   onClick={() => handlePriceChange()}
                 >
                   <Typography>Změnit</Typography>
@@ -96,7 +96,7 @@ export default function Player({ params: { item } }) {
                   variant="contained"
                   className="z-10 w-1/2"
                   color="primary"
-                  disabled={data.price === Number(price) || !price}
+                  disabled={validation}
                   onClick={() => setPrice(data.price.toString())}
                 >
                   <Typography>Reset</Typography>
@@ -114,32 +114,37 @@ export default function Player({ params: { item } }) {
                       height={300}
                       series={[
                         {
-                          data: [
-                            ...data.history.map(({ price }) => price),
-                            price,
-                          ],
+                          data: validation
+                            ? data.history.map(({ price }) => price)
+                            : [
+                                ...data.history.map(({ price }) => price),
+                                Number(price),
+                              ],
                         },
                       ]}
                       xAxis={[
                         {
                           scaleType: "point",
-                          data: [
-                            ...data.history.map(({ timestamp }) => timestamp),
-                            moment().format("DD.MM HH:mm"),
-                          ],
+                          data: validation
+                            ? data.history.map(({ timestamp }) => timestamp)
+                            : [
+                                ...data.history.map(
+                                  ({ timestamp }) => timestamp
+                                ),
+                                moment().format("DD.MM HH:mm"),
+                              ],
                         },
                       ]}
                       sx={{
                         ".MuiChartsAxis-bottom": {
                           display: "none",
                         },
-                        ".MuiMarkElement-series-auto-generated-id-0:not(:last-child) ":
-                          {
-                            display: "none",
-                          },
-                        ".MuiMarkElement-series-auto-generated-id-0 ": {
-                          stroke: "black",
-                        },
+                        ...(!validation && {
+                          ".MuiMarkElement-series-auto-generated-id-0:last-child ":
+                            {
+                              stroke: "red",
+                            },
+                        }),
                       }}
                     />
                   </div>
