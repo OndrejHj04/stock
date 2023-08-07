@@ -41,7 +41,7 @@ export default function MarketBuy() {
   const handleSubmit = () => {
     const {
       name,
-      item: { id, price },
+      item: { label, price, id },
       count,
     } = form;
     const docRef = doc(db, "players", name);
@@ -50,12 +50,12 @@ export default function MarketBuy() {
         const inventory = doc.data().inventory || [];
         updateDoc(docRef, {
           ...doc.data(),
-          inventory: [...inventory, { id, price, count }],
+          inventory: [...inventory, { label, price, count, id }],
         });
       })
       .then(() => {
         swal.fire(
-          `Předmět "${form.item.label}" zakoupen!`,
+          `Předmět "${label}" zakoupen!`,
           `Pro hráče "${name}" v počtu ${count} kusů za celkem ${
             price * count
           },- Chc`,
@@ -98,9 +98,9 @@ export default function MarketBuy() {
           onChange={(e, value) => setForm({ ...form, item: value })}
           sx={{ width: 300 }}
           id="combo-box-demo"
-          options={items.map((item, i) => ({
+          options={items.map((item) => ({
             label: item.name,
-            id: i,
+            id: item.id,
             price: item.price,
           }))}
           renderInput={(params) => <TextField {...params} label="Předmět" />}

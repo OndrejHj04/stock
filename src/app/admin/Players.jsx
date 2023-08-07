@@ -41,7 +41,7 @@ export default function Players() {
                     <Button
                       variant="outlined"
                       onClick={() =>
-                        navigation.push(`/administration/player/${name}`)
+                        navigation.push(`/admin/player/${name}`)
                       }
                     >
                       Detail
