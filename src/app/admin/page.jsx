@@ -6,7 +6,7 @@ import Market from "./Market";
 import Dashboard from "./Dashboard";
 
 export default function Page() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(3);
   return (
     <div className="flex flex-1 flex-col">
       <div className="flex-1 flex justify-center items-center">
