@@ -50,7 +50,10 @@ export default function MarketBuy() {
       items.forEach((item) => {
         inventoryBlank[item.label] = { label: item.label, count: 0, price: 0 };
       });
-      const inventory = doc.data().inventory || inventoryBlank;
+      const inventory = Object.values(doc.data().inventory).length
+        ? doc.data().inventory
+        : inventoryBlank;
+
       inventory[label] = {
         ...inventory[label],
         count: inventory[label].count + count,

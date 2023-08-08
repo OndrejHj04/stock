@@ -23,6 +23,7 @@ export default function Players() {
       setMarket(marketData);
     });
   }, []);
+
   return (
     <Paper className="flex flex-col gap-2 p-2">
       <Typography variant="h4" className="text-center">
@@ -32,7 +33,7 @@ export default function Players() {
       <div className="flex">
         {Array.isArray(data) ? (
           <>
-            {data.length ? (
+            {data.length && market ? (
               <div
                 className="flex flex-col overflow-scroll gap-1.5"
                 style={{ maxHeight: "400px" }}

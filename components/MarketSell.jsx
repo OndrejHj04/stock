@@ -6,9 +6,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../db";
+import swal from "sweetalert2";
 
 export default function MarketSell() {
   const [form, setForm] = useState({ name: "", item: null, count: null });
@@ -29,6 +36,7 @@ export default function MarketSell() {
         setUser(doc.data());
       });
     } else if (user) {
+      setForm({ ...form, item: null, count: null });
       setUser(null);
     }
   }, [validate]);
@@ -36,8 +44,38 @@ export default function MarketSell() {
   useEffect(() => {
     if (!form.item) {
       setForm({ ...form, count: null });
+    } else {
+      setForm({ ...form, count: 1 });
     }
   }, [form.item]);
+
+  const handleSell = () => {
+    const itemValueInUserInventory = user.inventory[form.item.label].price;
+    const itemCountInUserInventory = user.inventory[form.item.label].count;
+    const newCountAfterSell = itemCountInUserInventory - form.count;
+
+    const makePrice =
+      (itemValueInUserInventory / itemCountInUserInventory) * newCountAfterSell;
+
+    updateDoc(doc(db, "players", form.name), {
+      ...user,
+      inventory: {
+        ...user.inventory,
+        [form.item.label]: {
+          ...user.inventory[form.item.label],
+          count: user.inventory[form.item.label].count - form.count,
+          price: makePrice,
+        },
+      },
+    }).then(() => {
+      swal.fire(
+        `Prodáno za ${form.count}!`,
+        `Předmět ${form.item.label} uživatele ${form.name} prodán`,
+        "success"
+      );
+    });
+  };
+
   return (
     <>
       <form className="flex flex-col gap-2">
@@ -74,11 +112,7 @@ export default function MarketSell() {
             onChange={(e, value) => setForm({ ...form, item: value })}
             sx={{ width: 300 }}
             id="combo-box-demo"
-            options={items.map((item) => {
-              if (user?.inventory.some((i) => i.id === item.id)) {
-                return item;
-              }
-            })}
+            options={user?.inventory ? Object.values(user?.inventory) : []}
             renderInput={(params) => <TextField {...params} label="Předmět" />}
           />
         </div>
@@ -92,7 +126,7 @@ export default function MarketSell() {
             step={1}
             marks
             min={1}
-            max={user?.inventory.reduce((prev, curr) => prev + curr.count, 0)}
+            max={10}
           />
         </div>
         <div>
@@ -100,11 +134,21 @@ export default function MarketSell() {
             InputProps={{ readOnly: true }}
             label="Trzní cena vybraných předmětů"
             sx={{ width: 300 }}
-            value={form.count * form.item?.price || ""}
+            value={
+              items.length && form.item
+                ? form.count *
+                  items.find((item) => item.label === form.item.label).price
+                : ""
+            }
           />
         </div>
         <div>
-          <Button variant="contained" className="w-full" disabled={!form.count}>
+          <Button
+            variant="contained"
+            className="w-full"
+            disabled={!form.count}
+            onClick={handleSell}
+          >
             <Typography>Prodat {form.count} předmět</Typography>
           </Button>
         </div>

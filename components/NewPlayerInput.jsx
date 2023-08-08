@@ -10,6 +10,7 @@ export default function NewPlayerInput() {
     const { value } = e.target.name;
     setDoc(doc(db, "players", value), {
       name: value,
+      inventory: {},
     })
       .then(() => swal.fire("Přidáno", `Hráč "${value}" byl přidán`, "success"))
       .catch((err) => swal.fire("Chyba", err.message, "error"));

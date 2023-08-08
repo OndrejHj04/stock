@@ -20,7 +20,7 @@ export default function Player({ params: { player } }) {
       const array = [];
       array.push(...data.docs.map((doc) => doc.data()));
       setItems(array);
-    })
+    });
   }, []);
   return (
     <Paper className="flex flex-col gap-2 p-2">
@@ -34,19 +34,7 @@ export default function Player({ params: { player } }) {
             Jméno: {player}
           </Typography>
           <Typography variant="h5">Inventář:</Typography>
-          <div className="flex flex-col">
-            {data.inventory.map(({ count, label, id, price }, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <Typography className="mr-auto" variant="h6">
-                  {label}
-                </Typography>
-                <Typography>Datum: xxx</Typography>
-                <Typography>POČET: {count}</Typography>
-                <Typography>Pořizovací cena: {price}</Typography>
-                <Typography>Aktuální cena: {price}</Typography>
-              </div>
-            ))}
-          </div>
+          <div className="flex flex-col"></div>
         </>
       )}
     </Paper>
