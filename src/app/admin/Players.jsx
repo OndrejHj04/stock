@@ -4,6 +4,12 @@ import {
   Chip,
   CircularProgress,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
@@ -36,35 +42,31 @@ export default function Players() {
         List Hráčů
       </Typography>
       <NewPlayerInput />
-      <div className="flex">
-        {Array.isArray(data) ? (
-          <>
-            {data.length && market ? (
-              <div
-                className="flex flex-col overflow-scroll gap-1.5"
-                style={{ maxHeight: "400px" }}
-              >
-                {data.map(({ name, inventory }, i) => {
-                  const totalCount = Object.values(inventory).reduce(
-                    (a, b) => a + b.count,
-                    0
-                  );
-                  const marketPrice = Object.values(inventory).reduce(
-                    (a, b) => a + b.price,
-                    0
-                  );
-                  let updatedPrice = 0;
+      <TableContainer>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableBody>
+            {data &&
+              data.map(({ name, inventory }, i) => {
+                const totalCount = Object.values(inventory).reduce(
+                  (a, b) => a + b.count,
+                  0
+                );
+                const marketPrice = Object.values(inventory).reduce(
+                  (a, b) => a + b.price,
+                  0
+                );
+                let updatedPrice = 0;
 
-                  Object.values(inventory).forEach(({ count, label }) => {
-                    updatedPrice +=
-                      market.find((item) => item.label === label).price * count;
-                  });
-
-                  return (
-                    <div key={i} className="flex items-center gap-3">
-                      <Typography className="mr-auto" variant="h6">
-                        {name}
-                      </Typography>
+                Object.values(inventory).forEach(({ count, label }) => {
+                  updatedPrice +=
+                    market.find((item) => item.label === label).price * count;
+                });
+                return (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Typography variant="h6">{name}</Typography>
+                    </TableCell>
+                    <TableCell>
                       <Chip
                         color={
                           Math.round((updatedPrice / marketPrice) * 100 - 100)
@@ -81,30 +83,29 @@ export default function Players() {
                           ) || "0"
                         }%`}
                       />
+                    </TableCell>
+                    <TableCell>
                       <Typography>POČET PŘEDMĚTŮ: {totalCount}</Typography>
+                    </TableCell>
+                    <TableCell>
                       <Typography>
                         AKTUÁLNÍ HODNOTA: {updatedPrice},-
                       </Typography>
+                    </TableCell>
+                    <TableCell>
                       <Button
                         variant="outlined"
                         onClick={() => navigation.push(`/admin/player/${name}`)}
                       >
                         Detail
                       </Button>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <Typography className="m-auto">
-                Žádní uživatelé k zobrazení
-              </Typography>
-            )}
-          </>
-        ) : (
-          <CircularProgress className="m-auto" />
-        )}
-      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Paper>
   );
 }
