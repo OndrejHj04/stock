@@ -1,5 +1,11 @@
 "use client";
-import { Button, CircularProgress, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  Chip,
+  CircularProgress,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../db";
@@ -59,13 +65,25 @@ export default function Players() {
                       <Typography className="mr-auto" variant="h6">
                         {name}
                       </Typography>
+                      <Chip
+                        color={
+                          Math.round((updatedPrice / marketPrice) * 100 - 100)
+                            ? Math.round(
+                                (updatedPrice / marketPrice) * 100 - 100
+                              ) >= 0
+                              ? "success"
+                              : "error"
+                            : "default"
+                        }
+                        label={`${
+                          Math.round(
+                            (updatedPrice / marketPrice) * 100 - 100
+                          ) || "0"
+                        }%`}
+                      />
                       <Typography>POČET PŘEDMĚTŮ: {totalCount}</Typography>
-                      <Typography>NÁKUPNÍ CENA: {marketPrice},-</Typography>
                       <Typography>
                         AKTUÁLNÍ HODNOTA: {updatedPrice},-
-                      </Typography>
-                      <Typography>
-                        plus/minus {updatedPrice - marketPrice},-
                       </Typography>
                       <Button
                         variant="outlined"

@@ -69,7 +69,7 @@ export default function MarketSell() {
       },
     }).then(() => {
       swal.fire(
-        `Prodáno za ${form.count}!`,
+        `Prodáno za ${form.item.price}!`,
         `Předmět ${form.item.label} uživatele ${form.name} prodán`,
         "success"
       );
