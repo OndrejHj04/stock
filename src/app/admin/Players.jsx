@@ -38,17 +38,19 @@ export default function Players() {
                 style={{ maxHeight: "400px" }}
               >
                 {data.map(({ name, inventory }, i) => {
-                  const inventoryStats = [
-                    inventory.reduce((prev, curr) => prev + curr.count, 0),
-                    inventory.reduce(
-                      (prev, curr) => prev + curr.price * curr.count,
-                      0
-                    ),
-                  ];
+                  const totalCount = Object.values(inventory).reduce(
+                    (a, b) => a + b.count,
+                    0
+                  );
+                  const marketPrice = Object.values(inventory).reduce(
+                    (a, b) => a + b.price,
+                    0
+                  );
                   let updatedPrice = 0;
-                  inventory.map(({ id, count }) => {
-                    const item = market.find((item) => item.id === id);
-                    updatedPrice += item.price * count;
+
+                  Object.values(inventory).forEach(({ count, label }) => {
+                    updatedPrice +=
+                      market.find((item) => item.label === label).price * count;
                   });
 
                   return (
@@ -56,17 +58,13 @@ export default function Players() {
                       <Typography className="mr-auto" variant="h6">
                         {name}
                       </Typography>
-                      <Typography>
-                        POČET PŘEDMĚTŮ: {inventoryStats[0]},-
-                      </Typography>
-                      <Typography>
-                        NÁKUPNÍ CENA: {inventoryStats[1]},-
-                      </Typography>
+                      <Typography>POČET PŘEDMĚTŮ: {totalCount}</Typography>
+                      <Typography>NÁKUPNÍ CENA: {marketPrice},-</Typography>
                       <Typography>
                         AKTUÁLNÍ HODNOTA: {updatedPrice},-
                       </Typography>
                       <Typography>
-                        plus/minus {updatedPrice - inventoryStats[1]},-
+                        plus/minus {updatedPrice - marketPrice},-
                       </Typography>
                       <Button
                         variant="outlined"

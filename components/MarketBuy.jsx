@@ -41,19 +41,23 @@ export default function MarketBuy() {
   const handleSubmit = () => {
     const {
       name,
-      item: { label, price, id },
+      item: { label, price },
       count,
     } = form;
     const docRef = doc(db, "players", name);
-    getDoc(docRef)
-      .then((doc) => {
-        const inventory = doc.data().inventory || [];
-        updateDoc(docRef, {
-          ...doc.data(),
-          inventory: [...inventory, { label, price, count, id }],
-        });
-      })
-      .then(() => {
+    getDoc(docRef).then((doc) => {
+      const inventoryBlank = {};
+      items.forEach((item) => {
+        inventoryBlank[item.label] = { label: item.label, count: 0, price: 0 };
+      });
+      const inventory = doc.data().inventory || inventoryBlank;
+      inventory[label] = {
+        ...inventory[label],
+        count: inventory[label].count + count,
+        price: inventory[label].price + price * count,
+      };
+
+      updateDoc(docRef, { inventory }).then(() => {
         swal.fire(
           `Předmět "${label}" zakoupen!`,
           `Pro hráče "${name}" v počtu ${count} kusů za celkem ${
@@ -62,8 +66,9 @@ export default function MarketBuy() {
           "success"
         );
       });
+    });
   };
-  console.log(validate)
+
   return (
     <form className="flex flex-col gap-2">
       <div className="flex items-center ">
