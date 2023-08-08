@@ -6,7 +6,6 @@ import { db } from "../../../../../db";
 import { useRouter } from "next/navigation";
 export default function Player({ params: { player } }) {
   const [data, setData] = useState(null);
-  const [items, setItems] = useState([]);
   const router = useRouter();
   useEffect(() => {
     getDoc(doc(db, "players", player)).then((doc) => {
@@ -19,7 +18,7 @@ export default function Player({ params: { player } }) {
     getDocs(collection(db, "items")).then((data) => {
       const array = [];
       array.push(...data.docs.map((doc) => doc.data()));
-      setItems(array);
+      //setItems(array);
     });
   }, []);
   return (
