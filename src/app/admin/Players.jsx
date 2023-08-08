@@ -8,7 +8,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -42,70 +41,81 @@ export default function Players() {
         List Hráčů
       </Typography>
       <NewPlayerInput />
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableBody>
-            {data &&
-              data.map(({ name, inventory }, i) => {
-                const totalCount = Object.values(inventory).reduce(
-                  (a, b) => a + b.count,
-                  0
-                );
-                const marketPrice = Object.values(inventory).reduce(
-                  (a, b) => a + b.price,
-                  0
-                );
-                let updatedPrice = 0;
+      {market && data ? (
+        <>
+          <TableContainer>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableBody>
+                {data &&
+                  data.map(({ name, inventory }, i) => {
+                    const totalCount = Object.values(inventory).reduce(
+                      (a, b) => a + b.count,
+                      0
+                    );
+                    const marketPrice = Object.values(inventory).reduce(
+                      (a, b) => a + b.price,
+                      0
+                    );
+                    let updatedPrice = 0;
 
-                Object.values(inventory).forEach(({ count, label }) => {
-                  updatedPrice +=
-                    market.find((item) => item.label === label).price * count;
-                });
-                return (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Typography variant="h6">{name}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        color={
-                          Math.round((updatedPrice / marketPrice) * 100 - 100)
-                            ? Math.round(
+                    Object.values(inventory).forEach(({ count, label }) => {
+                      updatedPrice +=
+                        market.find((item) => item.label === label).price *
+                        count;
+                    });
+                    return (
+                      <TableRow key={i}>
+                        <TableCell>
+                          <Typography variant="h6">{name}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            color={
+                              Math.round(
                                 (updatedPrice / marketPrice) * 100 - 100
-                              ) >= 0
-                              ? "success"
-                              : "error"
-                            : "default"
-                        }
-                        label={`${
-                          Math.round(
-                            (updatedPrice / marketPrice) * 100 - 100
-                          ) || "0"
-                        }%`}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography>POČET PŘEDMĚTŮ: {totalCount}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>
-                        AKTUÁLNÍ HODNOTA: {updatedPrice},-
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outlined"
-                        onClick={() => navigation.push(`/admin/player/${name}`)}
-                      >
-                        Detail
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                              )
+                                ? Math.round(
+                                    (updatedPrice / marketPrice) * 100 - 100
+                                  ) >= 0
+                                  ? "success"
+                                  : "error"
+                                : "default"
+                            }
+                            label={`${
+                              Math.round(
+                                (updatedPrice / marketPrice) * 100 - 100
+                              ) || "0"
+                            }%`}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Typography>POČET PŘEDMĚTŮ: {totalCount}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>
+                            AKTUÁLNÍ HODNOTA: {updatedPrice},-
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outlined"
+                            onClick={() =>
+                              navigation.push(`/admin/player/${name}`)
+                            }
+                          >
+                            Detail
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      ) : (
+        <CircularProgress className="m-auto"/>
+      )}
     </Paper>
   );
 }
