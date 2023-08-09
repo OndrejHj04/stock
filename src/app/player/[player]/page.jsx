@@ -12,8 +12,8 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../db";
+import { PieChart } from "@mui/x-charts";
 import moment from "moment";
-import { LineChart } from "@mui/x-charts";
 export default function Page({ params: { player } }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState();
@@ -50,7 +50,8 @@ export default function Page({ params: { player } }) {
     let updatedPrice = 0;
 
     Object.values(data.inventory).forEach(({ count, label }) => {
-      updatedPrice += market.find((item) => item.label === label).price * count;
+      updatedPrice +=
+        market.find((item) => item.label === label)?.price * count;
     });
     const percent = `${
       Math.round((updatedPrice / marketPrice) * 100 - 100) || "0"
@@ -87,7 +88,41 @@ export default function Page({ params: { player } }) {
           <CircularProgress />
         ) : (
           <>
-            <div className="flex">{makePercent()}</div>
+            <div className="flex justify-between">
+              {makePercent()}
+              <div
+                style={{ width: "250px", height: "200px" }}
+                className="relative"
+              >
+                {console.log(
+                  data.inventory &&
+                    Object.values(data?.inventory)?.map((item, i) => ({
+                      id: i,
+                      value: item.price,
+                      label: item.label,
+                    }))
+                )}
+                {data.inventory && (
+                  <PieChart
+                    sx={{ fontFamily: "Helvetica" }}
+                    series={[
+                      {
+                        data: Object.values(data.inventory)?.map((item, i) => ({
+                          id: i,
+                          value: item.price,
+                          label: item.label,
+                        })),
+                        arcLabel: "label",
+                      },
+                    ]}
+                    legend={{ hidden: true }}
+                    tooltip={{ disabled: true }}
+                    width={400}
+                    height={200}
+                  />
+                )}
+              </div>
+            </div>
             {market.map((item, i) => {
               const thisItemInUserInventory = data.inventory[item.label];
 
@@ -118,11 +153,10 @@ export default function Page({ params: { player } }) {
                           label={<Typography>{percent}</Typography>}
                         />
                       </div>
-                      <Typography>Můj majetek: {marketPrice} Chc</Typography>
+                      <Typography>Můj majetek: {updatedPrice} Chc</Typography>
                       <Typography>Cena akcie: {item.price} Chc</Typography>
                     </div>
                   </div>
-                  <div className="w-60 flex-1"></div>
                 </Card>
               );
             })}
