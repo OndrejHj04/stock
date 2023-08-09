@@ -21,8 +21,8 @@ export default function Page() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {loading ? (
-        <CircularProgress />
+      {!loading ? (
+        <CircularProgress className="m-auto"/>
       ) : (
         <>
           <div className="flex-1 flex justify-center items-center">
