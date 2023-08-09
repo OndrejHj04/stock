@@ -31,6 +31,29 @@ export default function Page({ params: { player } }) {
     });
   }, []);
 
+  const makePercent = () => {
+    const marketPrice = Object.values(data.inventory).reduce(
+      (a, b) => a + b.price,
+      0
+    );
+
+    let updatedPrice = 0;
+
+    Object.values(data.inventory).forEach(({ count, label }) => {
+      updatedPrice += market.find((item) => item.label === label).price * count;
+    });
+    const percent = `${
+      Math.round((updatedPrice / marketPrice) * 100 - 100) || "0"
+    }%`;
+
+    return (
+      <>
+        <Typography>{marketPrice}</Typography>
+        <Typography>{percent}</Typography>
+      </>
+    );
+  };
+
   return (
     <div className="flex-1 flex justify-center items-center">
       <Paper className="p-3 flex flex-col gap-3">
@@ -39,12 +62,23 @@ export default function Page({ params: { player } }) {
         ) : (
           <>
             <Typography variant="h4">Vítej, {player}!</Typography>
+            {makePercent()}
             {market.map((item, i) => {
-              console.log(item);
+              const thisItemInUserInventory = data.inventory[item.label];
+
+              const marketPrice = thisItemInUserInventory.price;
+              const updatedPrice = item.price * thisItemInUserInventory.count;
+
+              const percent = `${
+                Math.round((updatedPrice / marketPrice) * 100 - 100) || "0"
+              }%`;
+
               return (
                 <Card className="flex gap-2" key={i}>
                   <Typography>{item.label}</Typography>
                   <Typography>{item.price},-</Typography>
+                  <Typography>{thisItemInUserInventory.count}</Typography>
+                  <Typography>{percent}</Typography>
                 </Card>
               );
             })}
@@ -54,23 +88,3 @@ export default function Page({ params: { player } }) {
     </div>
   );
 }
-
-// const totalCount = Object.values(data.inventory).reduce(
-//   (a, b) => a + b.count,
-//   0
-// );
-
-// const marketPrice = Object.values(data.inventory).reduce(
-//   (a, b) => a + b.price,
-//   0
-// );
-
-// let updatedPrice = 0;
-
-// Object.values(data.inventory).forEach(({ count, label }) => {
-//   updatedPrice +=
-//     market.find((item) => item.label === label).price * count;
-// });
-// const percent = `${
-//   Math.round((updatedPrice / marketPrice) * 100 - 100) || "0"
-// }%`;

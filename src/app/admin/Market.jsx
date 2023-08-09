@@ -31,12 +31,12 @@ export default function Market() {
               >
                 {market.map(({ label, price, history }, i) => {
                   const graphData = [
-                    history.reduce((prev, curr) =>
+                    history.length ? history.reduce((prev, curr) =>
                       prev.price < curr.price ? prev : curr
-                    ).price,
-                    history.reduce((prev, curr) =>
+                    ).price : 0,
+                    history.length ? history.reduce((prev, curr) =>
                       prev.price > curr.price ? prev : curr
-                    ).price,
+                    ).price : 0,
                   ];
                   return (
                     <div key={i} className="flex items-center gap-3">
@@ -46,7 +46,7 @@ export default function Market() {
                       <Typography>MIN: {graphData[0]},-</Typography>
                       <Typography>MAX: {graphData[1]},-</Typography>
                       <Typography>CENA: {price},-</Typography>
-                      <Typography>LAST CHANGE: {moment(history[history.length-1].timestamp).format("MM.DD. HH:mm")}</Typography>
+                      <Typography>LAST CHANGE: {history.length ? moment(history[history.length-1].timestamp).format("MM.DD. HH:mm") : 0}</Typography>
                       <Button
                         variant="outlined"
                         onClick={() => navigation.push(`/admin/item/${label}`)}
