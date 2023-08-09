@@ -1,11 +1,18 @@
 "use client";
-import { CircularProgress, Paper, Typography } from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  Card,
+  CircularProgress,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../db";
 export default function Page({ params: { player } }) {
   const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({});
+  const [items, setItems] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -15,13 +22,20 @@ export default function Page({ params: { player } }) {
           router.push("/");
         } else {
           setLoading(false);
+          setData(doc.data());
         }
       });
     } else {
       router.push("/");
     }
-  }, []);
 
+    getDocs(collection(db, "items")).then((doc) => {
+      const items = [];
+      doc.forEach((d) => items.push(d.data()));
+      setItems(items);
+    });
+  }, []);
+  console.log(data)
   return (
     <div className="flex-1 flex justify-center items-center">
       <Paper className="p-3 flex flex-col gap-3">
@@ -29,7 +43,10 @@ export default function Page({ params: { player } }) {
           <CircularProgress />
         ) : (
           <>
-            <Typography variant="h4">{player}</Typography>
+            <Typography variant="h4">Vítej, {player}!</Typography>
+            <Card>
+              
+            </Card>
           </>
         )}
       </Paper>

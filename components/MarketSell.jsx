@@ -44,6 +44,8 @@ export default function MarketSell() {
   useEffect(() => {
     if (!form.item) {
       setForm({ ...form, count: null });
+    } else if (form.item.count === 0) {
+      setForm({ ...form, count: 0 });
     } else {
       setForm({ ...form, count: 1 });
     }
@@ -69,7 +71,10 @@ export default function MarketSell() {
       },
     }).then(() => {
       swal.fire(
-        `Prodáno za ${form.item.price}!`,
+        `Prodáno za ${
+          form.count *
+          items.find((item) => item.label === form.item.label).price
+        }!`,
         `Předmět ${form.item.label} uživatele ${form.name} prodán`,
         "success"
       );
@@ -126,7 +131,7 @@ export default function MarketSell() {
             step={1}
             marks
             min={1}
-            max={10}
+            max={form.item?.count}
           />
         </div>
         <div>
