@@ -53,7 +53,7 @@ export default function MarketBuy() {
       const inventory = Object.values(doc.data().inventory).length
         ? doc.data().inventory
         : inventoryBlank;
-
+      console.log(inventory[label])
       inventory[label] = {
         ...inventory[label],
         count: inventory[label].count + count,
