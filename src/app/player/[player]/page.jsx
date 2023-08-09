@@ -62,12 +62,12 @@ export default function Page({ params: { player } }) {
 
   return (
     <div className="flex-1 flex justify-center items-center">
-      <Paper className="p-3 flex flex-col gap-3">
+      <Paper className="p-3 flex flex-col gap-3 mx-2">
         {loading ? (
           <CircularProgress />
         ) : (
           <>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2">
               <div className="flex-col flex">
                 <Typography className="font-bold" variant="h3">
                   {calculate().updatedPrice} Chc
@@ -97,32 +97,7 @@ export default function Page({ params: { player } }) {
                   />
                 </div>
               </div>
-              <div
-                style={{ width: "250px", height: "200px" }}
-                className="relative"
-              >
-                {data.inventory && (
-                  <PieChart
-                    sx={{ fontFamily: "Helvetica" }}
-                    series={[
-                      {
-                        data: Object.values(data.inventory)?.map((item, i) => ({
-                          id: i,
-                          value:
-                            market.find((i) => i.label === item.label)?.price *
-                            data.inventory[item.label].count,
-                          label: item.label,
-                        })),
-                        arcLabel: "label",
-                      },
-                    ]}
-                    legend={{ hidden: true }}
-                    tooltip={{ disabled: true }}
-                    width={400}
-                    height={200}
-                  />
-                )}
-              </div>
+              
             </div>
             {market.map((item, i) => {
               const thisItemInUserInventory = data.inventory[item.label];
