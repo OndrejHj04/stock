@@ -1,5 +1,6 @@
 "use client";
 import {
+  Avatar,
   Box,
   Card,
   Chip,
@@ -12,6 +13,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../db";
 import moment from "moment";
+import { LineChart } from "@mui/x-charts";
 export default function Page({ params: { player } }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState();
@@ -97,24 +99,30 @@ export default function Page({ params: { player } }) {
               }%`;
 
               return (
-                <Card className="flex gap-2 p-2 items-center" key={i}>
-                  <Typography variant="h6">{item.label}</Typography>
-                  <Typography>CENA: {item.price},-</Typography>
-                  <Typography>
-                    POČET: {thisItemInUserInventory.count}
-                  </Typography>
-                  <Chip
-                    color={
-                      Math.round((updatedPrice / marketPrice) * 100 - 100)
-                        ? Math.round(
-                            (updatedPrice / marketPrice) * 100 - 100
-                          ) >= 0
-                          ? "success"
-                          : "error"
-                        : "default"
-                    }
-                    label={<Typography>{percent}</Typography>}
-                  />
+                <Card className="flex gap-2 p-2" key={i}>
+                  <div className="flex gap-2 items-center">
+                    <Avatar sx={{ width: "70px", height: "70px" }} />
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-2">
+                        <Typography variant="h6">{item.label}</Typography>
+                        <Chip
+                          color={
+                            Math.round((updatedPrice / marketPrice) * 100 - 100)
+                              ? Math.round(
+                                  (updatedPrice / marketPrice) * 100 - 100
+                                ) >= 0
+                                ? "success"
+                                : "error"
+                              : "default"
+                          }
+                          label={<Typography>{percent}</Typography>}
+                        />
+                      </div>
+                      <Typography>Můj majetek: {marketPrice} Chc</Typography>
+                      <Typography>Cena akcie: {item.price} Chc</Typography>
+                    </div>
+                  </div>
+                  <div className="w-60 flex-1"></div>
                 </Card>
               );
             })}
