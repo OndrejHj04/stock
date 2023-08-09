@@ -1,5 +1,12 @@
 "use client";
-import { Card, CircularProgress, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  Chip,
+  CircularProgress,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -48,10 +55,26 @@ export default function Page({ params: { player } }) {
     }%`;
 
     return (
-      <>
-        <Typography>{marketPrice}</Typography>
-        <Typography>{percent}</Typography>
-      </>
+      <div className="flex-col flex">
+        <Typography className="font-bold" variant="h3">
+          {updatedPrice} Chc
+        </Typography>
+        <div className="flex items-center gap-2">
+          <Typography className="text-xl">
+            +{updatedPrice - marketPrice} Chc
+          </Typography>
+          <Chip
+            color={
+              Math.round((updatedPrice / marketPrice) * 100 - 100)
+                ? Math.round((updatedPrice / marketPrice) * 100 - 100) >= 0
+                  ? "success"
+                  : "error"
+                : "default"
+            }
+            label={<Typography>{percent}</Typography>}
+          />
+        </div>
+      </div>
     );
   };
 
@@ -62,8 +85,7 @@ export default function Page({ params: { player } }) {
           <CircularProgress />
         ) : (
           <>
-            <Typography variant="h4">Vítej, {player}!</Typography>
-            {makePercent()}
+            <div className="flex">{makePercent()}</div>
             {market.map((item, i) => {
               const thisItemInUserInventory = data.inventory[item.label];
 
@@ -75,11 +97,24 @@ export default function Page({ params: { player } }) {
               }%`;
 
               return (
-                <Card className="flex gap-2" key={i}>
-                  <Typography>{item.label}</Typography>
-                  <Typography>{item.price},-</Typography>
-                  <Typography>{thisItemInUserInventory.count}</Typography>
-                  <Typography>{percent}</Typography>
+                <Card className="flex gap-2 p-2 items-center" key={i}>
+                  <Typography variant="h6">{item.label}</Typography>
+                  <Typography>CENA: {item.price},-</Typography>
+                  <Typography>
+                    POČET: {thisItemInUserInventory.count}
+                  </Typography>
+                  <Chip
+                    color={
+                      Math.round((updatedPrice / marketPrice) * 100 - 100)
+                        ? Math.round(
+                            (updatedPrice / marketPrice) * 100 - 100
+                          ) >= 0
+                          ? "success"
+                          : "error"
+                        : "default"
+                    }
+                    label={<Typography>{percent}</Typography>}
+                  />
                 </Card>
               );
             })}
