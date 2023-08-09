@@ -1,7 +1,6 @@
 "use client";
 import {
   Avatar,
-  Box,
   Card,
   Chip,
   CircularProgress,
@@ -13,7 +12,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../db";
 import { PieChart } from "@mui/x-charts";
-import moment from "moment";
+
 export default function Page({ params: { player } }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({ inventory: {} });
@@ -67,8 +66,8 @@ export default function Page({ params: { player } }) {
           <CircularProgress />
         ) : (
           <>
-            <div className="flex justify-between gap-2">
-              <div className="flex-col flex">
+            <div className="flex justify-between gap-2 flex-wrap">
+              <div className="flex-col flex mx-auto">
                 <Typography className="font-bold" variant="h3">
                   {calculate().updatedPrice} Chc
                 </Typography>
@@ -97,7 +96,32 @@ export default function Page({ params: { player } }) {
                   />
                 </div>
               </div>
-              
+              <div
+                style={{ width: 200, height: 200 }}
+                className="overflow-hidden mx-auto"
+              >
+                <div className="relative -left-14">
+                  <PieChart
+                    sx={{ fontFamily: "Helvetica" }}
+                    series={[
+                      {
+                        data: Object.values(data.inventory)?.map((item, i) => ({
+                          id: i,
+                          value:
+                            market.find((i) => i.label === item.label)?.price *
+                            data.inventory[item.label].count,
+                          label: item.label,
+                        })),
+                        arcLabel: "label",
+                      },
+                    ]}
+                    legend={{ hidden: true }}
+                    tooltip={{ disabled: true }}
+                    width={400}
+                    height={200}
+                  />
+                </div>
+              </div>
             </div>
             {market.map((item, i) => {
               const thisItemInUserInventory = data.inventory[item.label];
