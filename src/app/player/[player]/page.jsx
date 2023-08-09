@@ -16,7 +16,7 @@ import { PieChart } from "@mui/x-charts";
 import moment from "moment";
 export default function Page({ params: { player } }) {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState();
+  const [data, setData] = useState({ inventory: {} });
   const [market, setMarket] = useState([]);
   const router = useRouter();
 
@@ -41,7 +41,7 @@ export default function Page({ params: { player } }) {
     });
   }, []);
 
-  const makePercent = () => {
+  const calculate = () => {
     const marketPrice = Object.values(data.inventory).reduce(
       (a, b) => a + b.price,
       0
@@ -57,28 +57,7 @@ export default function Page({ params: { player } }) {
       Math.round((updatedPrice / marketPrice) * 100 - 100) || "0"
     }%`;
 
-    return (
-      <div className="flex-col flex">
-        <Typography className="font-bold" variant="h3">
-          {updatedPrice} Chc
-        </Typography>
-        <div className="flex items-center gap-2">
-          <Typography className="text-xl">
-            +{updatedPrice - marketPrice} Chc
-          </Typography>
-          <Chip
-            color={
-              Math.round((updatedPrice / marketPrice) * 100 - 100)
-                ? Math.round((updatedPrice / marketPrice) * 100 - 100) >= 0
-                  ? "success"
-                  : "error"
-                : "default"
-            }
-            label={<Typography>{percent}</Typography>}
-          />
-        </div>
-      </div>
-    );
+    return { percent, updatedPrice, marketPrice };
   };
 
   return (
@@ -89,19 +68,39 @@ export default function Page({ params: { player } }) {
         ) : (
           <>
             <div className="flex justify-between">
-              {makePercent()}
+              <div className="flex-col flex">
+                <Typography className="font-bold" variant="h3">
+                  {calculate().updatedPrice} Chc
+                </Typography>
+                <div className="flex items-center gap-2">
+                  <Typography className="text-xl">
+                    +{calculate().updatedPrice - calculate().marketPrice} Chc
+                  </Typography>
+                  <Chip
+                    color={
+                      Math.round(
+                        (calculate().updatedPrice / calculate().marketPrice) *
+                          100 -
+                          100
+                      )
+                        ? Math.round(
+                            (calculate().updatedPrice /
+                              calculate().marketPrice) *
+                              100 -
+                              100
+                          ) >= 0
+                          ? "success"
+                          : "error"
+                        : "default"
+                    }
+                    label={<Typography>{calculate().percent}</Typography>}
+                  />
+                </div>
+              </div>
               <div
                 style={{ width: "250px", height: "200px" }}
                 className="relative"
               >
-                {console.log(
-                  data.inventory &&
-                    Object.values(data?.inventory)?.map((item, i) => ({
-                      id: i,
-                      value: item.price,
-                      label: item.label,
-                    }))
-                )}
                 {data.inventory && (
                   <PieChart
                     sx={{ fontFamily: "Helvetica" }}
@@ -109,7 +108,9 @@ export default function Page({ params: { player } }) {
                       {
                         data: Object.values(data.inventory)?.map((item, i) => ({
                           id: i,
-                          value: item.price,
+                          value:
+                            market.find((i) => i.label === item.label)?.price *
+                            data.inventory[item.label].count,
                           label: item.label,
                         })),
                         arcLabel: "label",
