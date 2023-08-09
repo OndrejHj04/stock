@@ -4,6 +4,7 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../../db";
+import moment from "moment";
 export default function Page({ params: { player } }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState();
@@ -57,7 +58,7 @@ export default function Page({ params: { player } }) {
   return (
     <div className="flex-1 flex justify-center items-center">
       <Paper className="p-3 flex flex-col gap-3">
-        {loading && data && data.inventory ? (
+        {loading ? (
           <CircularProgress />
         ) : (
           <>
