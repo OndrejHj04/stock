@@ -29,7 +29,7 @@ export default function Market() {
                 className="flex flex-col overflow-scroll gap-1.5"
                 style={{ maxHeight: "400px" }}
               >
-                {market.map(({ label, price, history }, i) => {
+                {market.map(({ label, price, history, code }, i) => {
                   const graphData = [
                     history.length ? history.reduce((prev, curr) =>
                       prev.price < curr.price ? prev : curr
@@ -49,7 +49,7 @@ export default function Market() {
                       <Typography>LAST CHANGE: {history.length ? moment(history[history.length-1].timestamp).format("MM.DD. HH:mm") : 0}</Typography>
                       <Button
                         variant="outlined"
-                        onClick={() => navigation.push(`/admin/item/${label}`)}
+                        onClick={() => navigation.push(`/admin/item/${code}`)}
                       >
                         Detail
                       </Button>
