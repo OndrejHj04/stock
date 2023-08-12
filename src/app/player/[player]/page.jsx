@@ -134,7 +134,7 @@ export default function Page({ params: { player } }) {
               }%`;
 
               return (
-                <Card className="flex gap-2 p-2" key={i}>
+                <Card className="flex gap-2 p-2 my-2" key={i}>
                   <div className="flex gap-2 items-center">
                     <Avatar sx={{ width: "70px", height: "70px" }} src={`./${item.code}.png`}/>
                     <div className="flex flex-col">
