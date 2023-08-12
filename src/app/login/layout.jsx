@@ -6,7 +6,7 @@ export default function Layout({ children }) {
   const size = useWindowSize();
 
   return (
-    <div style={{ height: size.height }} className="w-full flex">
+    <div style={{ height: size.height }} className="w-full flex h-screen">
       {children}
     </div>
   );

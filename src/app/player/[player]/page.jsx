@@ -60,7 +60,7 @@ export default function Page({ params: { player } }) {
   };
 
   return (
-    <div className="flex-1 flex justify-center items-center">
+    <div className="flex-1 flex justify-center items-center my-2">
       <Paper className="p-3 flex flex-col gap-3 mx-2">
         {loading ? (
           <CircularProgress />
@@ -134,7 +134,7 @@ export default function Page({ params: { player } }) {
               }%`;
 
               return (
-                <Card className="flex gap-2 p-2 my-2" key={i}>
+                <Card className="flex gap-2 p-2" key={i}>
                   <div className="flex gap-2 items-center">
                     <Avatar sx={{ width: "70px", height: "70px" }} src={`./${item.code}.png`}/>
                     <div className="flex flex-col">
