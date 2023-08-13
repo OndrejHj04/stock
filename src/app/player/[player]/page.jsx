@@ -105,13 +105,19 @@ export default function Page({ params: { player } }) {
                     sx={{ fontFamily: "Helvetica" }}
                     series={[
                       {
-                        data: Object.values(data.inventory)?.map((item, i) => ({
-                          id: i,
-                          value:
-                            market.find((i) => i.label === item.label)?.price *
-                            data.inventory[item.label].count,
-                          label: item.label,
-                        })),
+                        data: Object.values(data.inventory)?.map((item, i) => {
+                          if(data.inventory[item.label].count){
+                            return {
+                              id: i,
+                              value:
+                                market.find((i) => i.label === item.label)?.price *
+                                data.inventory[item.label].count,
+                              label: item.label,
+                            }
+                          }else{
+                            return null
+                          }
+                        }),
                         arcLabel: "label",
                       },
                     ]}
@@ -136,7 +142,7 @@ export default function Page({ params: { player } }) {
               return (
                 <Card className="flex gap-2 p-2" key={i}>
                   <div className="flex gap-2 items-center">
-                    <Avatar sx={{ width: "70px", height: "70px" }} src={`./${item.code}.png`}/>
+                    <Avatar sx={{ width: "70px", height: "70px" }} src={`/${item.code}.png`}/>
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
                         <Typography variant="h6">{item.label}</Typography>
