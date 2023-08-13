@@ -28,7 +28,8 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (username === "prisnetajne") {
+    // eslint-disable-next-line no-undef
+    if (username === process.env.NEXT_PUBLIC_PASSWORD) {
       localStorage.setItem("admin", true);
       router.push("/admin");
     }
