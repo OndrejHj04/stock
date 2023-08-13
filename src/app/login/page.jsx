@@ -28,7 +28,7 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (username === "kraljeliman") {
+    if (username === process.env.PASSWORD) {
       localStorage.setItem("admin", true);
       router.push("/admin");
     }
