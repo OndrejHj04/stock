@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { db } from "../../../db";
 import { useRouter } from "next/navigation";
+import { env } from "process";
 
 export default function Page() {
   const [username, setUsername] = useState("");
@@ -28,7 +29,7 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (username === process.env.PASSWORD) {
+    if (username === env.PASSWORD) {
       localStorage.setItem("admin", true);
       router.push("/admin");
     }
