@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { db } from "../../../db";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function Page() {
   const [username, setUsername] = useState("");
@@ -28,11 +29,10 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line no-undef
-    if (username === process.env.NEXT_PUBLIC_PASSWORD) {
+    axios.post("/login", { username }).then(() => {
       localStorage.setItem("admin", true);
       router.push("/admin");
-    }
+    });
   }, [username]);
 
   const handleLogin = () => {
